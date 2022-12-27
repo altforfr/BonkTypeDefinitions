@@ -61,7 +61,7 @@ export interface footballGameState {
     /**
      * Stands for "sounds this step"
     */
-    sts: number[]
+    sts?: []
     /**
      * Array containing info about players
     */
