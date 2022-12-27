@@ -1,3 +1,5 @@
+//todo: move constants.js to here and implement eMode
+
 export enum eMode {
     Arrows = "ar",
     DeathArrows = "ard",
