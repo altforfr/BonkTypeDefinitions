@@ -1,3 +1,13 @@
+export enum eMode {
+    Arrows = "ar",
+    DeathArrows = "ard",
+    Classic = "b", //Also a """game engine"""
+    Simple = "bs",
+    Football = "f", //Also a """game engine"""
+    Grapple = "sp",
+    VTOL = "v",
+}
+
 export enum eTeam {
     Unknown = -1, //Why can team ever be -1 possibly set by a error fallback??
     Spectator = 0,
@@ -8,6 +18,7 @@ export enum eTeam {
     Yellow = 5,
 }
 
+
 export interface playerInfo {
     /**
     * The Player ID of the player.
@@ -17,6 +28,38 @@ export interface playerInfo {
      * The Team ID of the player with the "ID" corresponding to a team
      */
     team: eTeam
+}
+
+/**
+     * todo add info
+     */
+
+/**
+ * maybe add diff discs for diff "engines / gamestates (would the type definitions work well?????????????)"?
+ */
+export interface disc {
+    x: number
+    y: number
+    xv: number
+    yv: number
+    sx?: number
+    sy?: number
+    sxv?: number
+    syv?: number
+    a?: number
+    av?: number
+    a1a?: number
+    team?: eTeam
+    a1?: boolean
+    ds?: number
+    da?: number
+    tcd?: number
+    ni?: boolean
+    a2?: boolean
+    radius?: number
+    lht?: number
+    lhid?: number
+    kickReady?:boolean
 }
 
 export interface footballGameState {
@@ -61,7 +104,7 @@ export interface footballGameState {
     /**
      * Stands for "sounds this step"
     */
-    sts?: []
+    sts: []
     /**
      * Array containing info about players
     */
@@ -89,5 +132,11 @@ export interface footballGameState {
      * When the timer reaches -1, it stops and the world unfreezes.
     */
     ftu: number
-    discs: []
+    /**
+    * Array that contains varied attributes for every disc currently alive.
+     * 
+     * Ordered by disc/player ID (discs[0] is disc with ID 0, discs[2] is disc with ID 2, etc.)
+     * in football this usually only has the keys x,y,xv,yv,team,kickReady
+     */
+    discs: disc[]
 }
