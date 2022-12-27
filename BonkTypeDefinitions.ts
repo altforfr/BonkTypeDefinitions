@@ -222,6 +222,9 @@ export interface map {
 
 }
 
+/**
+ * todo: add info and implement into codebase (which implementng is a pain)
+ */
 export interface mapSettings {
     /** Corresponds to the "Respawn on death" option in the map editor. 
      * It specifies whether discs can respawn on death or not. 
