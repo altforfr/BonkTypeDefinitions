@@ -1,5 +1,6 @@
 //todo: move constants.js to here and implement eMode
 
+
 export enum eMode {
     Arrows = "ar",
     DeathArrows = "ard",
@@ -28,42 +29,113 @@ export interface playerInfo {
     id: number
     /**
      * The Team ID of the player with the "ID" corresponding to a team
-     */
+    */
     team: eTeam
 }
 
+
 /**
-     * todo add info
-     */
+* todo add info
+*/
 
 /**
  * maybe add diff discs for diff "engines / gamestates (would the type definitions work well?????????????)"?
- */
+*/
 export interface disc {
+    /**
+     * Position x
+    */
     x: number
+    /**
+     * Position y
+    */
     y: number
+    /**
+     * Velocity X
+    */
     xv: number
+    /**
+     * Velocity Y
+    */
     yv: number
+    /**
+     * Spawn Position X
+    */
     sx?: number
+    /**
+     * Spawn Position Y
+    */
     sy?: number
+    /**
+     * Spawn Velocity X
+    */
     sxv?: number
+    /**
+     * Spawn Velocity Y
+    */
     syv?: number
-    a?: number
+    /**
+     * stands for "angle"
+    */
+    a?: number 
+    /**
+     * Likely stands for "angular velocity"
+    */
     av?: number
+    /**
+     *Stands for "action 1 ammo"
+    */
     a1a?: number
     team?: eTeam
+    /**
+     *Stands for "action 1"
+    */
     a1?: boolean
+    /**
+     *Stands for "draw strength"
+    */
     ds?: number
+    /**
+     *Stands for "draw angle"
+    */
     da?: number
     tcd?: number
+    /**
+    * Stands for "no interpolation"
+    * Setting this value to true will make the game not interpolate the player's movement until the next step. Useful for teleporting players without visible middle frames.
+    */
     ni?: boolean
+    /**
+     * Likely stands for "action 2"
+    */
     a2?: boolean
     radius?: number
+    swing?: swingState
+    /**
+     * Probably stands for "last hit time"
+    */
     lht?: number
+    /**
+     * Likely stands for "last hit id"
+    */
     lhid?: number
     kickReady?:boolean
 }
 
+export interface swingState {
+    /**
+     * Body?
+    */
+    b: number
+    /**
+     * Length
+     */
+    l: number
+    /**
+     * Point
+    */
+    p: vector2
+}
 export interface footballGameState {
     /**
     *  Array containing the amount of wins for each team.
@@ -139,6 +211,39 @@ export interface footballGameState {
      * 
      * Ordered by disc/player ID (discs[0] is disc with ID 0, discs[2] is disc with ID 2, etc.)
      * in football this usually only has the keys x,y,xv,yv,team,kickReady
-     */
+    */
     discs: disc[]
 }
+
+/**
+ * todo: add info and implement into codebase (which implementng is a pain)
+ */
+export interface map {
+
+}
+
+/**
+ * todo: add info and implement into codebase (which implementng is a pain)
+ */
+export interface mapMetadata {
+    /**
+     * Map Author's username
+     */
+    a: string
+}
+
+/**
+ * todo: add info and implement into codebase (which implementng is a pain)
+ */
+export interface gameSettings {
+        map: map
+        gt: number
+        wl: any
+        q: boolean
+        tl: boolean
+        tea: boolean
+        ga: string
+        mo: string
+        bal: any[]
+}
+declare type vector2 = [x: number, y: number]
