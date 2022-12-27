@@ -222,14 +222,59 @@ export interface map {
 
 }
 
+export interface mapSettings {
+    /** Corresponds to the "Respawn on death" option in the map editor. 
+     * It specifies whether discs can respawn on death or not. 
+    */
+    re: boolean
+    /**
+     * Likely stands for "no collision"
+     * 
+     * Corresponds to the "Players don't collide" option in the map editor. 
+     * It specifies whether discs can collide with each other (false) or not (true).
+     */
+    nc: boolean
+    /** Corresponds to the "Complex physics" option in the map editor. 
+     * For some reason, it's not a boolean, but a number:
+     * - When pq == 1 << 1, complex physics are used.
+     * - When pq != 1 << 1, normal physics are used. 
+    */
+    pq: number
+    /**
+     * Probably stands for "grid dimension"
+     * 
+     * Map editor grid size. This property has no effect whatsoever on the game. 
+     */
+    gd: number
+    /** Corresponds to the "Players can fly" option in the map editor. 
+     * It specifies whether discs can "fly" (like in fly maps) or not. 
+    */
+    fl: boolean     
+}
+
 /**
  * todo: add info and implement into codebase (which implementng is a pain)
  */
+//keys are mixed from 2 diff interfacess????? fix this shit
 export interface mapMetadata {
     /**
      * Map Author's username
-     */
+    */
     a: string
+    n: string
+    dbv: number
+    // dbid?: number
+    // authid?: number
+    // date?: string
+    // rxid?: number
+    rxn: string
+    rxa: string
+    rxdb: number
+    // cr?: []
+    // pub?: boolean
+    mo: string
+    // vu?: number
+    // vd?: number
 }
 
 /**
@@ -246,4 +291,6 @@ export interface gameSettings {
         mo: string
         bal: any[]
 }
+
 declare type vector2 = [x: number, y: number]
+declare type vector3 = [x: number, y: number, z: number]
