@@ -21,6 +21,17 @@ export enum eTeam {
     Yellow = 5,
 }
 
+/**
+ * Enum for custom client  / mod not in bonk.io
+ */
+export enum ePermissionLevel {
+    None,
+    Info,
+    Friendly,
+    Toxic,
+    Admin,
+    All,
+}
 
 export interface playerInfo {
     /**
@@ -138,14 +149,15 @@ export interface swingState {
 }
 export interface footballGameState {
     /**
-    *  Array containing the amount of wins for each team.
+    *  Array containing the amount of wins for each team. T
+    *  This item does not have to be a number although the game always does set it with numbers
     * 
     * - On a football game, there are up to 4 items, with each one corresponding to a specific team,
     *   in the following order: 0 = unused in football, 1 = unused in football, 2 = Red, 3 = Blue.
     *   For example: scores[2] would be Team Red's amount of wins.
     *   And another example: scores[1] would be no teams's amount of wins as its unused.
     */
-    scores: number[]
+    scores: any[]
     /**
      * The Goal Height
     */
@@ -171,18 +183,18 @@ export interface footballGameState {
     lscr: number
     seed: number
     /**
+     * Stands for "sounds this step"
+    */
+    sts: []|null
+    /**
     * Stands for "no interpolation"
     * Setting this value to true will make the game not interpolate the player's movement until the next step. Useful for teleporting players without visible middle frames.
     */
     ni: boolean
     /**
-     * Stands for "sounds this step"
-    */
-    sts: []
-    /**
      * Array containing info about players
     */
-    players: playerInfo[]
+    players: (playerInfo|null)[]
     /**
      * Stands for "frames to end"
      * 
@@ -219,7 +231,11 @@ export interface footballGameState {
  * todo: add info and implement into codebase (which implementng is a pain)
  */
 export interface map {
-
+    s: mapSettings
+    m: mapMetadata
+    physics: any
+    spawns: any
+    capZones: any
 }
 
 /**
@@ -256,28 +272,79 @@ export interface mapSettings {
 }
 
 /**
- * todo: add info and implement into codebase (which implementng is a pain)
- */
-//keys are mixed from 2 diff interfacess????? fix this shit
-export interface mapMetadata {
+ * todo: implement into codebase (which implementng is a pain)
+*/
+export interface mapMetadata { //most are rarely optional
     /**
+     * Likely stands for "author"
+     * 
      * Map Author's username
     */
     a: string
+    /**
+     *Likely stands for "name"
+     * 
+     * Map Name
+    */
     n: string
+    /**
+     * Likely stands for "database version"
+     * 
+     * Maps published in flash bonk.io will have dbv 1, while maps published in current bonk.io will have dbv 2.
+    */
     dbv: number
-    // dbid?: number
-    // authid?: number
-    // date?: string
-    // rxid?: number
+    /**
+     * Likely stands for "database id"
+    */
+    dbid?: number
+    /**
+     * The "auth id"
+     */
+    authid?: number
+    date?: string
+    rxid?: number
+    /** 
+     * Original map name. 
+     * This is only present in edited maps. 
+     * In completely original maps, it gets set to "" (an empty string). 
+    */
     rxn: string
+    /** 
+     * Original map author's username. 
+     * This is only present in edited maps. 
+     * In completely original maps, it gets set to "" (an empty string). 
+    */
     rxa: string
+    /** Original database version 
+     * (refer to `dbv`'s description). 
+     * This is only present in edited maps. 
+     * In completely original maps, it gets set to 1. 
+    */
     rxdb: number
-    // cr?: []
-    // pub?: boolean
+    cr?: []
+    /**
+     * Likely stands for "published"
+     * 
+     * This will tell you whether the map is published. 
+     * when its set to true the map is published otherwise false
+    */
+    pub?: boolean
+    /** Recommended mode for this map.
+     * see eMode enum for different types of modes
+    */
     mo: string
-    // vu?: number
-    // vd?: number
+    /** 
+     * Likely stands for "votes up"
+     * 
+     * The amount of upvotes the map received. 
+    */
+    vu?: number //do these exist???
+    /** 
+     * Likely stands for "votes down"
+     * 
+     * The amount of downvotes the map received. 
+    */
+    vd?: number //do these exist???
 }
 
 /**
