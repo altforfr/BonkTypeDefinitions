@@ -250,7 +250,7 @@ export interface projectile {
 
 export interface footballGameState {
     /**
-    *  Array containing the amount of wins for each team. T
+    *  Array containing the amount of wins for each team.
     *  This item does not have to be a number although the game always does set it with numbers
     * 
     * - On a football game, there are up to 4 items, with each one corresponding to a specific team,
@@ -521,7 +521,6 @@ export interface gameSettings {
     * Array that contains the balance (nerf/buff) of each player. Ordered by player ID.
     */
     bal: any[]
-    sa1
 }
 
 declare type vector2 = [x: number, y: number]
