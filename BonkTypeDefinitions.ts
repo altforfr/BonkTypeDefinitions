@@ -1,6 +1,8 @@
 //todo: move constants.js to here and implement eMode
 
-
+/**
+ * The different types of modes in bonk.io
+ */
 export enum eMode {
     Arrows = "ar",
     DeathArrows = "ard",
@@ -11,6 +13,9 @@ export enum eMode {
     VTOL = "v",
 }
 
+/**
+ * The different types of team ids and what they correspond to in bonk.io
+ */
 export enum eTeam {
     Unknown = -1, //Why can team ever be -1 possibly set by a error fallback??
     Spectator = 0,
@@ -19,6 +24,15 @@ export enum eTeam {
     Blue = 3,
     Green = 4,
     Yellow = 5,
+}
+
+/**
+ * The different types of projectiles currently in bonk.io 
+ * However currently there is only one that is:
+ * - "arrow"
+ */
+export enum eProjectileType {
+    arrow = "arrow"
 }
 
 /**
@@ -40,17 +54,14 @@ export interface playerInfo {
     id: number
     /**
      * The Team ID of the player with the "ID" corresponding to a team
+     * 
+     * see eTeam enum for team ids
     */
     team: eTeam
 }
 
-
 /**
 * todo add info
-*/
-
-/**
- * maybe add diff discs for diff "engines / gamestates (would the type definitions work well?????????????)"?
 */
 export interface disc {
     /**
@@ -147,6 +158,64 @@ export interface swingState {
     */
     p: vector2
 }
+
+export interface projectile {
+    /**
+     * Likely stands for "angle"
+     * 
+     * Angle in degrees of the arrow.
+     */
+    a: number
+    /**
+     * Likely stands for "angular velocity"
+     * 
+     * Angular velocity of the arrow.
+     */
+    av: number
+    /**
+     * The player id of the player who launched/shot this projectile
+     */
+    did: number
+    /**
+     * Stands for "frames to end"
+     * 
+     * in a projectiles case its probably the timer that indicates how long until the arrow disappears / ends?
+    */
+    fte: number
+    /**
+     * The Team ID of the player who launched/shot the projectile with the "ID" corresponding to a team
+     * 
+     * see eTeam enum for team ids
+    */
+    team: eProjectileType
+    /**
+     * The projectile type 
+     * 
+     * only one I know of is "arrow"
+     */
+    type: string
+    /**
+     * Position x
+    */
+    x: number
+    /**
+     * Position y
+    */
+    y: number
+    /**
+     * Velocity X
+    */
+    xv: number
+    /**
+     * Velocity Y
+    */
+    yv: number
+    /**
+     * Stands for "no interpolation"
+     */
+    ni?: boolean
+}
+
 export interface footballGameState {
     /**
     *  Array containing the amount of wins for each team. T
@@ -229,18 +298,18 @@ export interface footballGameState {
 
 /**
  * todo: add info and implement into codebase (which implementng is a pain)
- */
+*/
 export interface map {
     s: mapSettings
     m: mapMetadata
-    physics: any
+    physics: physics
     spawns: any
     capZones: any
 }
 
 /**
- * todo: add info and implement into codebase (which implementng is a pain)
- */
+ * todo: implement into codebase (which implementng is a pain)
+*/
 export interface mapSettings {
     /** Corresponds to the "Respawn on death" option in the map editor. 
      * It specifies whether discs can respawn on death or not. 
@@ -338,28 +407,89 @@ export interface mapMetadata { //most are rarely optional
      * 
      * The amount of upvotes the map received. 
     */
-    vu?: number //do these exist???
+    vu?: number
     /** 
      * Likely stands for "votes down"
      * 
      * The amount of downvotes the map received. 
     */
-    vd?: number //do these exist???
+    vd?: number
 }
 
 /**
- * todo: add info and implement into codebase (which implementng is a pain)
- */
+ * todo and info implement into codebase (which implementng is a pain)
+*/
+export interface physics {
+    brodies: any
+    bro: any
+    fixtures: any
+    joints: any
+    /**
+     * Likely stands for "pixels per meter". It determines the size of the map: bigger ppm, smaller map.
+     * 
+     * Despite the name, a ppm of 1 will not make every meter a screen pixel wide,
+     * instead it will make them around 1.5 pixels wide due to an internal parameter called
+     * "scale ratio" that assures an optimal resolution according to the client's display size. 
+    */
+    ppm: number
+    shapes: any
+}
+
+/**
+* implement into codebase (which implementng is a pain)
+*/
 export interface gameSettings {
-        map: map
-        gt: number
+        /**
+         * The map data
+         */
+        map?: map
+        gt?: number
+        /**
+         * Likely Stands for "win / loses"
+         * 
+         * Amount of rounds to win.
+        */
         wl: any
-        q: boolean
+        /**
+         * Likely stands for "quickplay"
+         * 
+         * Whether "quickplay" is enabled
+         */
+        q?: boolean
+        /**
+         * Likely stands for "teamlock"
+         * 
+         * true if teams are locked, otherwise false.
+         */
         tl: boolean
+        /**
+         * true if teams are on, otherwise false.
+         */
         tea: boolean
-        ga: string
+        /**
+         * Likely stands for "game"
+         * 
+         * The "game engine" currently selected. Which controls how to draw and which classes to use.
+         * 
+         * The options are: 
+         * - "f" for football
+         * - "b" for bonk / classic
+         */
+        ga?: string
+        /**
+         * Likely stands for "mode"
+         * The game-mode currently selected.
+         * 
+         * see eMode enum for different types of modes
+         */
         mo: string
+        /**
+         * Likely stands for "balance"
+         * 
+         * Array that contains the balance (nerf/buff) of each player. Ordered by player ID.
+         */
         bal: any[]
+        sa1
 }
 
 declare type vector2 = [x: number, y: number]
