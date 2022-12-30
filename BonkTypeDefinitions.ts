@@ -451,6 +451,7 @@ export interface mapMetadata { //most are rarely optional
  * Implement everything below fully into codebase
  */
 //todo add info for joints
+//search ["enableMotor"] = true to find info
 export type joint = baseJoint & (revoluteJoint | distanceJoint | lPJJoint | lSJJoint)
 
 export interface baseJoint {
@@ -564,8 +565,8 @@ export interface lPJJoint { //name could be legacyPathJoint
 
 export interface lSJJoint { //name could be legacySpringJoint
     /**
-       * The type of the joint
-       */
+    * The type of the joint
+    */
     type: "lpj";
     /**
     * Probably stands for drawing
@@ -577,6 +578,12 @@ export interface lSJJoint { //name could be legacySpringJoint
         bf: any;
         dl: any;
     };
+    ba: any;
+    bb: any;
+    sax: any;
+    say: any;
+    sf: any;
+    slen: any;
 }
 
 export interface physics {
