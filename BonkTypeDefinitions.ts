@@ -46,8 +46,7 @@ export enum ePermissionLevel {
 }
 
 /**
-* Skin shape ids for avatar layers 
-* Names stolen from [bonkleagues.io](https://bonkleagues.io)
+* Skin shape ids for avatar layers
 */
 export enum eAvatarShape {
     Alien1,
@@ -165,6 +164,23 @@ export enum eAvatarShape {
     Whisp9,
     Whisp10,
     Whisp11
+}
+
+export enum eBodyType {
+    static = 's', // stationary = 's',
+    kinematic = 's',
+    dynamic = 'd',
+}
+
+/*
+todo: Incomplete
+add newEventListener interfaces and more event names
+*/
+export enum eEventNameRecv {
+    newPlayerJoined = 4 
+}
+
+export enum eEventNameOut {
 }
 
 /**
@@ -453,7 +469,6 @@ export interface footballGameState {
     discs: disc[];
 }
 
-//todo add spawns / expand physics and add mroe info
 export interface map {
     /**
     * Map version ex, flash or bonk2
@@ -462,7 +477,7 @@ export interface map {
     s: mapSettings;
     m: mapMetadata;
     physics: physics;
-    spawns: any;
+    spawns: spawn[];
     capZones: captureZone[];
 }
 
@@ -624,11 +639,7 @@ export interface avatarLayer {
     color: number
 }
 
-
-/**
- * Implement everything below fully into codebase
- */
-export type joint = baseJoint & (revoluteJoint | distanceJoint | legacyPathJoint | legacySprintJoint | pathJoint | softRodJoint | gearJoint)
+export type joint = baseJoint & (revoluteJoint | distanceJoint | legacyPathJoint | legacySpringyJoint | pathJoint | softRodJoint | gearJoint)
 
 export interface baseJoint {
     /**
@@ -709,7 +720,7 @@ export interface revoluteJoint {
         */
         bf: number;
         dl: any;
-    },
+    };
     /**
     * Likely stands for "anchor a" or "attach a"  
     */
@@ -786,24 +797,32 @@ export interface legacyPathJoint {
     * Probably stands for "path anchor y" or "path axis y"
     */
     pay: number;
-    pa: any;
     /**
-    * Likely Stands for "path force" but in the code its defined as "maxMotorForce" 
+    * Stands for "path angle" 
+    */
+    pa: number;
+    /**
+    * Stands for "path force"
     */
     pf: number;
     pl: number;
+    /**
+    * Likely stands for "path upper"
+    * 
+    * This seems to be unused 
+    */
     pu: number;
     /**
-    * Likely Stands for "path length" 
+    * Likely Stands for "path length" but defined in the code as "path upper"
     */
     plen: number;
     /**
-    * Stands for "path motor speed" 
+    * Stands for "path max speed" 
     */
     pms: number;
 }
 
-export interface legacySprintJoint {
+export interface legacySpringyJoint {
     /**
     * The type of the joint
     */
@@ -826,9 +845,21 @@ export interface legacySprintJoint {
         bf: number;
         dl: any;
     };
+    /**
+    * Stands for "springy anchor x"
+    */
     sax: any;
+    /**
+    * Stands for "springy anchor y"
+    */
     say: any;
+    /**
+    * Stands for "springy force"
+    */
     sf: any;
+    /**
+    * Stands for "springy length" but its defined in the code as "springy upper"
+    */
     slen: any;
 }
 
@@ -946,14 +977,13 @@ export interface gearJoint {
     }
 }
 
-
 export type shape = baseShape & (boxShape | circleShape | polyShape | chainShape);
 
+//todo add info for shapes
 export interface baseShape { 
     type: string;
     c?: vector2;
 }
-
 
 export interface boxShape {
     type: "bx";
@@ -1025,9 +1055,10 @@ export interface fixture {
     */
     ng: boolean;
 }
+
 export interface physics {
-    brodies: any[];
-    bro: any[];
+    bodies: (body|undefined)[];
+    bro: number[];
     fixtures: (fixture|undefined)[];
     joints: (joint|undefined)[];
     /**
@@ -1039,6 +1070,68 @@ export interface physics {
     */
     ppm: number;
     shapes: (shape|undefined)[];
+}
+
+//      infO:             ["IsFixedRotation"]();
+//add info for body
+export interface body {
+    /**
+    * The body type 
+    */
+    type: eBodyType;
+    /**
+    * Likely Stands for "name"
+    * 
+    * The body name
+    */
+    n: string;
+    p: vector2;
+    a: number;
+    fric: number;
+    fricp: boolean;
+    re: number;
+    de: number;
+    lv: number[];
+    av: number;
+    ld: number;
+    ad: number;
+    /**
+    * Stands for "fixed rotation"
+    * 
+    * Whether rotation is fixed
+    */
+    fr: boolean;
+    bu: boolean;
+    cf: {
+        x: number;
+        y: number;
+        w: boolean;
+        ct: number;
+    };
+    fx: number[];
+    f_c: number;
+    f_p: boolean;
+    f_1: boolean;
+    f_2: boolean;
+    f_3: boolean;
+    f_4: boolean;
+}
+
+export interface spawn {
+    x: number;
+    y: number;
+    xv: number;
+    yv: number;
+    priority: number;
+    r: boolean;
+    f: boolean;
+    b: boolean;
+    gr: boolean;
+    ye: boolean;
+    /**
+    * The spawn name 
+    */
+    n: string;
 }
 
 export interface captureZone {
@@ -1138,5 +1231,5 @@ export interface gameSettings {
     bal: any[];
 }
 
-declare type vector2 = [number, number]; /x, y
+declare type vector2 = [number, number]; //x, y
 declare type vector3 = [number, number, number]; //x, y, z
