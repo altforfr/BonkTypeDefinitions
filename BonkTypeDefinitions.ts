@@ -46,6 +46,20 @@ export enum ePermissionLevel {
 }
 
 /**
+* Skin shape ids for avatar layers 
+* There should be about 115 shapes this list is very incomplete at the moment
+*/
+export enum eAvatarShape {
+    alien,
+    alien2,
+    alien3,
+    alien4,
+    alien5,
+    alien6,
+    square = 84,
+}
+
+/**
 * Contains info about the current roomInfo
 */
 export interface roomInfo { //implemented?
@@ -331,7 +345,7 @@ export interface footballGameState {
     discs: disc[];
 }
 
-//todo add spawns capzones / more info
+//todo add spawns / expand physics and add mroe info
 export interface map {
     /**
      * Map version ex, flash or bonk2
@@ -447,12 +461,61 @@ export interface mapMetadata { //most are rarely optional
     vd?: number;
 }
 
+export interface avatar {
+    /**
+    * The different "layers" of shapes on the skin
+    * For a skin to be usable this must not be over 15 layers
+    */
+    layers: avatarLayer[]
+    /**
+    * Stands for "background colour"
+    * 
+    * The background colour of the skin
+    */
+    bc: number;
+}
+
+export interface avatarLayer { 
+    /**
+    * The shape id
+    */
+    id: eAvatarShape;
+    /**
+    * The scale of the shape 
+    */
+    scale: number;
+    /**
+    * The angle of the shape in degrees 
+    */
+    angle: number;
+    /**
+    * x position of the shape 
+    */
+    x: number;
+    /**
+    * y position of the shape 
+    */
+    y: number;
+    /**
+    * Whether to flip the skin horizontally (x) 
+    */
+    flipX: boolean;
+    /**
+    * Whether to flip the skin vertically (y) 
+    */
+    flipY: number;
+    /**
+    * The shape colour
+    */
+    color: number
+}
+
+
 /**
  * Implement everything below fully into codebase
  */
-//todo add info for joints
 //search ["enableMotor"] = true to find info
-export type joint = baseJoint & (revoluteJoint | distanceJoint | lPJJoint | lSJJoint)
+export type joint = baseJoint & (revoluteJoint | distanceJoint | legacyPathJoint | legacySprintJoint | pathJoint | softRodJoint | gearJoint)
 
 export interface baseJoint {
     /**
@@ -474,8 +537,8 @@ export interface baseJoint {
     */
     d: {
         /**
-         * Probably stands for "begin fill"
-         */
+        * Probably stands for "begin fill"
+        */
         bf?: number;
         /**
         * Stands for "collideConnected"
@@ -498,19 +561,58 @@ export interface revoluteJoint {
     * contains extra info about the joint for drawing
     */
     d: {
-        la: any;
-        ua: any;
-        mmt: any;
-        ms: any;
-        el: any;
-        em: any;
-        cc: any;
-        bf: any;
+        /**
+        * Stands for "lower angle"
+        */
+        la: number;
+        /**
+        * Stands for "upper angle"
+        */
+        ua: number;
+        /**
+        * Stands for "max motor torque"
+        */
+        mmt: number;
+        /**
+        * Stands for "motor speed" 
+        */
+        ms: number;
+        /**
+        * Stands for "enable limit"
+        */
+        el: boolean;
+        /**
+        * Stands for "enable motor" 
+        */
+        em: boolean;
+        /**
+        * Stands for "collideConnected"
+        * 
+        * Whether the joint collides with the connected
+        */
+        cc: boolean;
+        /**
+        * Probably stands for "begin fill"
+        */
+        bf: number;
         dl: any;
     },
-    ba: number;
+    /**
+    * Stands for "body b" (id)
+    */
     bb: number;
-    aa: vector2
+    /**
+    * Stands for "body a" (id)
+    */
+    ba: number;
+    /**
+    * Likely stands for "anchor a" or "attach a"  
+    */
+    aa: vector2;
+    /**
+    * Likely stands for "anchor b" or "attach b"  
+    */
+    ab?: vector2;
 }
 
 export interface distanceJoint {
@@ -526,17 +628,37 @@ export interface distanceJoint {
     d: {
         fh: any;
         dr: any;
-        cc: any;
-        bf: any;
+        /**
+        * Stands for "collideConnected"
+        * 
+        * Whether the joint collides with the connected
+        */
+        cc: boolean;
+        /**
+        * Probably stands for "begin fill"
+        */
+        bf: number;
         dl: any
     };
-    ba: number;
+    /**
+    * Stands for "body b" (id)
+    */
     bb: number;
+    /**
+    * Stands for "body a" (id)
+    */
+    ba: number;
+    /**
+    * Likely stands for "anchor a" or "attach a"  
+    */
     aa: vector2;
+    /**
+    * Likely stands for "anchor b" or "attach b"  
+    */
     ab: vector2;
 }
 
-export interface lPJJoint { //name could be legacyPathJoint
+export interface legacyPathJoint {
     /**
     * The type of the joint
     */
@@ -547,23 +669,52 @@ export interface lPJJoint { //name could be legacyPathJoint
     * contains extra info about the joint for drawing
     */
     d: {
-        cc: any;
-        bf: any;
+        /**
+        * Stands for "collideConnected"
+        * 
+        * Whether the joint collides with the connected
+        */
+        cc: boolean;
+        /**
+        * Probably stands for "begin fill"
+        */
+        bf: number;
         dl: any;
     };
-    ba: number;
+    /**
+    * Stands for "body b" (id)
+    */
     bb: number;
-    pax: any;
-    pay: any;
+    /**
+    * Stands for "body a" (id)
+    */
+    ba: number;
+    /**
+    * Probably stands for "path anchor x" or "path axis x"
+    */
+    pax: number;
+    /**
+    * Probably stands for "path anchor y" or "path axis y"
+    */
+    pay: number;
     pa: any;
-    pf: any;
-    pl: any;
-    pu: any;
-    plen: any;
-    pms: any;
+    /**
+    * Likely Stands for "path force" but in the code its defined as "maxMotorForce" 
+    */
+    pf: number;
+    pl: number;
+    pu: number;
+    /**
+    * Likely Stands for "path length" 
+    */
+    plen: number;
+    /**
+    * Stands for "path motor speed" 
+    */
+    pms: number;
 }
 
-export interface lSJJoint { //name could be legacySpringJoint
+export interface legacySprintJoint {
     /**
     * The type of the joint
     */
@@ -574,23 +725,159 @@ export interface lSJJoint { //name could be legacySpringJoint
     * contains extra info about the joint for drawing
     */
     d: {
-        cc: any;
-        bf: any;
+        /**
+        * Stands for "collideConnected"
+        * 
+        * Whether the joint collides with the connected
+        */
+        cc: boolean;
+        /**
+        * Probably stands for "begin fill"
+        */
+        bf: number;
         dl: any;
     };
-    ba: any;
-    bb: any;
+    /**
+    * Stands for "body b" (id)
+    */
+    bb: number;
+    /**
+    * Stands for "body a" (id)
+    */
+    ba: number;
     sax: any;
     say: any;
     sf: any;
     slen: any;
 }
 
+export interface pathJoint {
+    /**
+    * The type of the joint
+    */
+    type: "p";
+    /**
+    * Likely stands for "anchor a" or "attach a"  
+    */
+    aa: vector2;
+    /**
+    * Likely stands for "anchor b" or "attach b"  
+    */
+    ab: vector2;
+    /**
+    * Stands for "axis a" 
+    */
+    axa?: vector2;
+    d: {
+        /**
+        * Stands for "upper translation"
+        */
+        ut: number;
+        /**
+        * Stands for "lower translation"
+        */
+        lt: number;
+        /**
+        * Stands for "max motor force"
+        */
+        mmf: number;
+        /**
+        * Stands for "motor speed"
+        */
+        ms: number;
+        /**
+        * Stands for "enable limit"
+        */
+        el?: boolean;
+        /**
+        * Stands for "enable motor"
+        */
+        em?: boolean;
+        /**
+        * Stands for "collideConnected"
+        * 
+        * Whether the joint collides with the connected
+        */
+        cc?: boolean;
+    }
+    /**
+    * Likely stands for "change side" 
+    * 
+    * Controls the side of the motor
+    */
+    cs?: number;
+}
+
+export interface softRodJoint {
+    /**
+    * The type of the joint
+    */
+    type: "d";
+    /**
+    * Likely stands for "anchor a" or "attach a"  
+    */
+    aa: vector2;
+    /**
+    * Likely stands for "anchor b" or "attach b"  
+    */
+    ab: vector2;
+    /**
+    * Stands for "length"
+    */
+    len?: number;
+    d: {
+        /**
+        * Stands for "damping ratio"
+        */
+        dr: number;
+        /**
+        * Stands for "frequency hz" 
+        */
+        fh: number;
+        /**
+        * Stands for "collideConnected"
+        * 
+        * Whether the joint collides with the connected
+        */
+        cc: boolean;
+    }
+}
+
+export interface gearJoint {
+    /**
+    * The type of the joint
+    */
+    type: "g";
+    /**
+    * Stands for "body b" (id)
+    */
+    bb: number;
+    /**
+    * Stands for "body a" (id)
+    */
+    ba: number;
+    /**
+    * Stands for "joint a" its defined in the code as joint 1
+    */
+    ja?: any;
+    /**
+    * Stands for "joint b" its defined in the code as joint 2
+    */
+    jb?: any;
+    d: {
+        /**
+        * Stands for "ratio"
+        */
+        r: number;
+        cc?: boolean;
+    }
+}
+
 export interface physics {
     brodies: any;
     bro: any;
     fixtures: any;
-    joints: (joint|undefined)[];
+    joints: (joint | undefined)[];
     /**
     * Likely stands for "pixels per meter". It determines the size of the map: bigger ppm, smaller map.
     * 
@@ -631,19 +918,19 @@ export interface captureZone {
      * 
      * The player id of the owner (after capture)
      */
-    o?:number;
+    o?: number;
     /**
      * Likely stands for "owner team"
      * 
      * Owner eTeam id (after capture)
      */
-    ot?:(eTeam|undefined);
+    ot?: (eTeam | undefined);
     /**
     * Likely stands for "power"
     * 
     * The Power / Capture completion
     */
-    p?:number;
+    p?: number;
 }
 
 export interface gameSettings {
@@ -699,5 +986,5 @@ export interface gameSettings {
     bal: any[];
 }
 
-declare type vector2 = [x: number, y: number];
-declare type vector3 = [x: number, y: number, z: number];
+declare type vector2 = [number, number]; //reverted changes. just a array: x, y
+declare type vector3 = [number, number, number]; //reverted changes. just a array: x, y, z
