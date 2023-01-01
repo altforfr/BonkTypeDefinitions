@@ -47,16 +47,124 @@ export enum ePermissionLevel {
 
 /**
 * Skin shape ids for avatar layers 
-* There should be about 115 shapes this list is very incomplete at the moment
+* Names stolen from [bonkleagues.io](https://bonkleagues.io)
 */
 export enum eAvatarShape {
-    alien,
-    alien2,
-    alien3,
-    alien4,
-    alien5,
-    alien6,
-    square = 84,
+    Alien1,
+    Alien2,
+    Alien3,
+    Alien4,
+    Alien5,
+    Alien6,
+    Barbedwire1,
+    Barbedwire2,
+    Barbedwire3,
+    Barbedwire4,
+    Barbedwire5,
+    Barbedwire6,
+    Circle,
+    Crescent,
+    Cross1,
+    Cross2,
+    Cross3,
+    Cross4,
+    Cross5,
+    Cross6,
+    Cross7,
+    Face1,
+    Face10,
+    Face11,
+    Face12,
+    Face13,
+    Face14,
+    Face15,
+    Face16,
+    Face17,
+    Face18,
+    Face2,
+    Face19,
+    Face20,
+    Face21,
+    Face3,
+    Face4,
+    Face5,
+    Face6,
+    Face7,
+    Face8,
+    Face9,
+    Flames1,
+    Flames10,
+    Flames2,
+    Flames3,
+    Flames4,
+    Flames5,
+    Flames6,
+    Flames7,
+    Flames8,
+    Flames9,
+    Skull1,
+    Cross,
+    Star1,
+    Triangle,
+    Grungecircle,
+    Grungeheart1,
+    Grungeheart2,
+    Grungeleaf1,
+    Grungeleaf2,
+    Grungeleaf3,
+    Skull2,
+    Shoeprint,
+    Handprint,
+    Fingerprint,
+    Print2,
+    Grungelines1,
+    Grungelines2,
+    Splat,
+    Pentagon,
+    Rectangle1,
+    Triangletall1,
+    Rectangle2,
+    Rectangle3,
+    Rectanglefat,
+    Semicircle,
+    Roundedrectangle,
+    Moon,
+    Triangleeven,
+    Triangletall2,
+    Splat1,
+    Splat2,
+    Splat3,
+    Square,
+    Star2,
+    Radioactive1,
+    World,
+    Signal,
+    Skullcross,
+    Skull3,
+    Exclamation,
+    Electricity,
+    Chain,
+    Scope1,
+    Scope2,
+    Radioactive2,
+    Biohazard,
+    Fire1,
+    Fire2,
+    Oxidiser,
+    Ball,
+    Atomic,
+    Freeze,
+    Whisp1,
+    Whisp2,
+    Whisp3,
+    Whisp4,
+    Whisp5,
+    Whisp6,
+    Whisp7,
+    Whisp8,
+    Whisp9,
+    Whisp10,
+    Whisp11
 }
 
 /**
@@ -348,8 +456,8 @@ export interface footballGameState {
 //todo add spawns / expand physics and add mroe info
 export interface map {
     /**
-     * Map version ex, flash or bonk2
-     */
+    * Map version ex, flash or bonk2
+    */
     v: number;
     s: mapSettings;
     m: mapMetadata;
@@ -466,7 +574,7 @@ export interface avatar {
     * The different "layers" of shapes on the skin
     * For a skin to be usable this must not be over 15 layers
     */
-    layers: avatarLayer[]
+    layers: (avatarLayer|undefined)[]
     /**
     * Stands for "background colour"
     * 
@@ -478,10 +586,14 @@ export interface avatar {
 export interface avatarLayer { 
     /**
     * The shape id
+    * 
+    * Value minimum is 1 and maximum 115 otherwise it will be reverted back to 1
     */
     id: eAvatarShape;
     /**
     * The scale of the shape 
+    * 
+    * Value minimum is -9999 and maximum 9999 otherwise it will be reverted back to 0 
     */
     scale: number;
     /**
@@ -506,6 +618,8 @@ export interface avatarLayer {
     flipY: number;
     /**
     * The shape colour
+    * 
+    * Value minimum is 0 and maximum 16777215 otherwise it will be reverted back to 0 
     */
     color: number
 }
@@ -514,7 +628,6 @@ export interface avatarLayer {
 /**
  * Implement everything below fully into codebase
  */
-//search ["enableMotor"] = true to find info
 export type joint = baseJoint & (revoluteJoint | distanceJoint | legacyPathJoint | legacySprintJoint | pathJoint | softRodJoint | gearJoint)
 
 export interface baseJoint {
@@ -598,14 +711,6 @@ export interface revoluteJoint {
         dl: any;
     },
     /**
-    * Stands for "body b" (id)
-    */
-    bb: number;
-    /**
-    * Stands for "body a" (id)
-    */
-    ba: number;
-    /**
     * Likely stands for "anchor a" or "attach a"  
     */
     aa: vector2;
@@ -641,14 +746,6 @@ export interface distanceJoint {
         dl: any
     };
     /**
-    * Stands for "body b" (id)
-    */
-    bb: number;
-    /**
-    * Stands for "body a" (id)
-    */
-    ba: number;
-    /**
     * Likely stands for "anchor a" or "attach a"  
     */
     aa: vector2;
@@ -681,14 +778,6 @@ export interface legacyPathJoint {
         bf: number;
         dl: any;
     };
-    /**
-    * Stands for "body b" (id)
-    */
-    bb: number;
-    /**
-    * Stands for "body a" (id)
-    */
-    ba: number;
     /**
     * Probably stands for "path anchor x" or "path axis x"
     */
@@ -737,14 +826,6 @@ export interface legacySprintJoint {
         bf: number;
         dl: any;
     };
-    /**
-    * Stands for "body b" (id)
-    */
-    bb: number;
-    /**
-    * Stands for "body a" (id)
-    */
-    ba: number;
     sax: any;
     say: any;
     sf: any;
@@ -849,14 +930,6 @@ export interface gearJoint {
     */
     type: "g";
     /**
-    * Stands for "body b" (id)
-    */
-    bb: number;
-    /**
-    * Stands for "body a" (id)
-    */
-    ba: number;
-    /**
     * Stands for "joint a" its defined in the code as joint 1
     */
     ja?: any;
@@ -873,11 +946,90 @@ export interface gearJoint {
     }
 }
 
+
+export type shape = baseShape & (boxShape | circleShape | polyShape | chainShape);
+
+export interface baseShape { 
+    type: string;
+    c?: vector2;
+}
+
+
+export interface boxShape {
+    type: "bx";
+    w: number;
+    h: number;
+    a: number;
+    sk: boolean;
+}
+
+export interface circleShape {
+    type: "ci";
+    r: number;
+    sk: boolean;
+}
+
+export interface polyShape {
+    type: "po";
+    v: [];
+    s: number;
+    a: number;
+}
+
+//getNewChainShape
+export interface chainShape {
+    type: "ch";
+    v: [];
+    s: number;
+    a: number;
+    l: boolean;
+    sk: boolean;
+}
+
+
+export interface fixture {
+    sh: number;
+    /**
+    * The fixture name 
+    */
+    n: string;
+    /**
+    * Likely stands for "friction" 
+    */
+    fr: number;
+    /**
+    * Likely stands for "friction players" 
+    */
+    fp?: boolean;
+    /**
+    * Unsure what this stands for but it controls the fixture's "Bounciness" 
+    */
+    re: number;
+    /**
+    * Likely stands for "density" 
+    */
+    de: number;
+    f: number;
+    /**
+    * Likely stands for "death"
+    * 
+    * Controls whether the fixture is deathly / will kill you when you touch it 
+    */
+    d: boolean;
+    /**
+    * Likely stands for "no physics" 
+    */
+    np: boolean;
+    /**
+    * Likely stands for "no grapple" 
+    */
+    ng: boolean;
+}
 export interface physics {
-    brodies: any;
-    bro: any;
-    fixtures: any;
-    joints: (joint | undefined)[];
+    brodies: any[];
+    bro: any[];
+    fixtures: (fixture|undefined)[];
+    joints: (joint|undefined)[];
     /**
     * Likely stands for "pixels per meter". It determines the size of the map: bigger ppm, smaller map.
     * 
@@ -886,7 +1038,7 @@ export interface physics {
     * "scale ratio" that assures an optimal resolution according to the client's display size. 
     */
     ppm: number;
-    shapes: any;
+    shapes: (shape|undefined)[];
 }
 
 export interface captureZone {
@@ -910,20 +1062,20 @@ export interface captureZone {
     */
     i: number;
     /**
-     * Final countdown -- Jumps to 20 upon capture, decreases by one per frame, on zero, win is executed.
-     */
+    * Final countdown -- Jumps to 20 upon capture, decreases by one per frame, on zero, win is executed.
+    */
     f: number;
     /**
-     * Likely stands for "owner"
-     * 
-     * The player id of the owner (after capture)
-     */
+    * Likely stands for "owner"
+    * 
+    * The player id of the owner (after capture)
+    */
     o?: number;
     /**
-     * Likely stands for "owner team"
-     * 
-     * Owner eTeam id (after capture)
-     */
+    * Likely stands for "owner team"
+    * 
+    * Owner eTeam id (after capture)
+    */
     ot?: (eTeam | undefined);
     /**
     * Likely stands for "power"
@@ -986,5 +1138,5 @@ export interface gameSettings {
     bal: any[];
 }
 
-declare type vector2 = [number, number]; //reverted changes. just a array: x, y
-declare type vector3 = [number, number, number]; //reverted changes. just a array: x, y, z
+declare type vector2 = [number, number]; /x, y
+declare type vector3 = [number, number, number]; //x, y, z
