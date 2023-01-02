@@ -192,7 +192,7 @@ export interface roomInfo { //implemented?
     * 1 meaning the room is hidden/unlisted 
     * 0 meaning the room is visible/listed
     */
-    hidden: 1 | 0;
+    hidden: 1|0;
     /**
     * The maximum level allowed for a player to be able to enter the room room
     */
@@ -226,6 +226,31 @@ export interface playerInfo { //Likely real name is playerState
     * see eTeam enum for team ids
     */
     team: eTeam;
+}
+export interface lobbyPlayerInfo {
+    /**
+    * The Player ID of the player.
+    */
+    avatar: avatar;
+    /**
+    * Whether the player is a guest 
+    */
+    guest: boolean;
+    level: number;
+    ping: number;
+    ready: boolean;
+    /**
+    * Whether the player is foccused on the tab 
+    */
+    tabbed: boolean;
+    /**
+    * The team the player is in (Team id)
+    */
+    team: eTeam;
+    /**
+    * The name of the player 
+    */
+    userName: string;
 }
 
 export interface disc {
@@ -427,7 +452,7 @@ export interface footballGameState {
     /**
     * Stands for "sounds this step"
     */
-    sts: [] | null;
+    sts: ((null|soundsThisStep|number|undefined)[]|undefined);
     /**
     * Stands for "no interpolation"
     * Setting this value to true will make the game not interpolate the player's movement until the next step. Useful for teleporting players without visible middle frames.
@@ -436,7 +461,7 @@ export interface footballGameState {
     /**
     * Array containing info about players
     */
-    players: (playerInfo | null)[];
+    players: (playerInfo|null)[];
     /**
     * Stands for "frames to end"
     * 
@@ -467,6 +492,25 @@ export interface footballGameState {
     * in football this usually only has the keys x,y,xv,yv,team,kickReady
     */
     discs: disc[];
+}
+
+/**
+* Contains info about which keys are being pressed 
+*/
+export interface input {
+    action: boolean;
+    action2: boolean;
+    down: boolean;
+    left: boolean;
+    right: boolean;
+    up: boolean;
+}
+
+export interface soundsThisStep {
+    i: any;
+    v: number;
+    p?: string;
+    f: any;
 }
 
 export interface map {
@@ -719,7 +763,7 @@ export interface revoluteJoint {
         * Probably stands for "begin fill"
         */
         bf: number;
-        dl: any;
+        dl: boolean;
     };
     /**
     * Likely stands for "anchor a" or "attach a"  
@@ -754,7 +798,7 @@ export interface distanceJoint {
         * Probably stands for "begin fill"
         */
         bf: number;
-        dl: any
+        dl: boolean;
     };
     /**
     * Likely stands for "anchor a" or "attach a"  
@@ -787,7 +831,7 @@ export interface legacyPathJoint {
         * Probably stands for "begin fill"
         */
         bf: number;
-        dl: any;
+        dl: boolean;
     };
     /**
     * Probably stands for "path anchor x" or "path axis x"
@@ -843,24 +887,24 @@ export interface legacySpringyJoint {
         * Probably stands for "begin fill"
         */
         bf: number;
-        dl: any;
+        dl: boolean;
     };
     /**
     * Stands for "springy anchor x"
     */
-    sax: any;
+    sax: number;
     /**
     * Stands for "springy anchor y"
     */
-    say: any;
+    say: number;
     /**
     * Stands for "springy force"
     */
-    sf: any;
+    sf: number;
     /**
     * Stands for "springy length" but its defined in the code as "springy upper"
     */
-    slen: any;
+    slen: number;
 }
 
 export interface pathJoint {
@@ -981,14 +1025,35 @@ export type shape = baseShape & (boxShape | circleShape | polyShape | chainShape
 
 //todo add info for shapes
 export interface baseShape { 
+    /**
+    * The shape "type" 
+    */
     type: string;
+    /**
+    * Likely stands for "coordinates"
+    * 
+    * Contains the position of the shape 
+    */
     c?: vector2;
 }
 
 export interface boxShape {
     type: "bx";
+    /**
+    * Likely stands for "width"
+    * 
+    * The shapes width 
+    */
     w: number;
+    /**
+    * Likely stands for "height"
+    * 
+    * The shapes height 
+    */
     h: number;
+    /**
+    * Probably stands for "angle" 
+    */
     a: number;
     sk: boolean;
 }
@@ -1002,7 +1067,13 @@ export interface circleShape {
 export interface polyShape {
     type: "po";
     v: [];
+    /**
+    * Probably stands for "scale" 
+    */
     s: number;
+    /**
+    * Probably stands for "angle" 
+    */
     a: number;
 }
 
@@ -1011,6 +1082,9 @@ export interface chainShape {
     type: "ch";
     v: [];
     s: number;
+    /**
+    * Probably stands for "angle" 
+    */
     a: number;
     l: boolean;
     sk: boolean;
@@ -1032,7 +1106,8 @@ export interface fixture {
     */
     fp?: boolean;
     /**
-    * Unsure what this stands for but it controls the fixture's "Bounciness" 
+    * Likely stands for "Restitution"
+    * Controls the fixture's "Bounciness" 
     */
     re: number;
     /**
@@ -1080,20 +1155,53 @@ export interface body {
     */
     type: eBodyType;
     /**
-    * Likely Stands for "name"
+    * Stands for "name"
     * 
     * The body name
     */
     n: string;
+    /**
+    * Stands for "position"
+    * 
+    * The position of the body 
+    */
     p: vector2;
+    /**
+    * Stands for "angle"
+    */
     a: number;
+    /**
+    * Likely stands for "friction" 
+    */
     fric: number;
+    /**
+    * Likely stands for "friction players" 
+    */
     fricp: boolean;
+    /**
+    * Likely stands for "Restitution"
+    * Controls the Body's "Bounciness" 
+    */
     re: number;
+    /**
+    * Likely stands for "density" 
+    */
     de: number;
-    lv: number[];
+    /**
+    * Stands for "linear velocity"
+    */
+    lv: vector2;
+    /**
+    * Stands for "angular velocity" 
+    */
     av: number;
+    /**
+    * Stands for "linear damping" 
+    */
     ld: number;
+    /**
+    * Stands for "angular damping" 
+    */
     ad: number;
     /**
     * Stands for "fixed rotation"
@@ -1101,23 +1209,60 @@ export interface body {
     * Whether rotation is fixed
     */
     fr: boolean;
+    /**
+    * Stands for "bullet"
+    * 
+    * Whether the body is a bullet"??
+    */
     bu: boolean;
+    /**
+    * Likely stands for "constant force"
+    */
     cf: {
+        /**
+        * How much Constant force in the x axis 
+        */
         x: number;
+        /**
+        * How much Constant force in the y axis 
+        */
         y: number;
         w: boolean;
+        /**
+        * Likely stands for "constant torque" 
+        */
         ct: number;
     };
     fx: number[];
+    /**
+    * Probably stands for "filter collision" 
+    */
     f_c: number;
     f_p: boolean;
+    /**
+    * Likely stands for "filter 1" 
+    */
     f_1: boolean;
+    /**
+    * Likely stands for "filter 2" 
+    */
     f_2: boolean;
+    /**
+    * Likely stands for "filter 3" 
+    */
     f_3: boolean;
+    /**
+    * Likely stands for "filter 4" 
+    */
     f_4: boolean;
+    bg?: any; //Likely a boolean
 }
 
 export interface spawn {
+    /**
+    * The spawn name 
+    */
+    n: string;
     x: number;
     y: number;
     xv: number;
@@ -1126,12 +1271,8 @@ export interface spawn {
     r: boolean;
     f: boolean;
     b: boolean;
-    gr: boolean;
-    ye: boolean;
-    /**
-    * The spawn name 
-    */
-    n: string;
+    gr?: boolean;
+    ye?: boolean;
 }
 
 export interface captureZone {
@@ -1169,7 +1310,7 @@ export interface captureZone {
     * 
     * Owner eTeam id (after capture)
     */
-    ot?: (eTeam | undefined);
+    ot?: (eTeam|undefined);
     /**
     * Likely stands for "power"
     * 
@@ -1189,7 +1330,7 @@ export interface gameSettings {
     * 
     * Amount of rounds to win.
     */
-    wl: any;
+    wl: number;
     /**
     * Likely stands for "quickplay"
     * 
@@ -1231,5 +1372,22 @@ export interface gameSettings {
     bal: any[];
 }
 
-declare type vector2 = [number, number]; //x, y
-declare type vector3 = [number, number, number]; //x, y, z
+/**
+* not in real bonk from modded client 
+* also not to be confused with "data" object
+*/
+export interface dataCustom {
+    footballGamestate: footballGameState;
+    bonkGamestate: any; //todo add info / add interface
+    map: map;
+    lobby: {
+        room: roomInfo;
+        playerArray: lobbyPlayerInfo;
+    }
+    screen: vector2;
+}
+
+declare type vector2 = [x:number, y:number];
+declare type vector3 = [x:number, y:number, z:number];
+declare type dVector2 = {x:number, y:number};
+declare type dVector3 = {x:number, y:number, z:number};
