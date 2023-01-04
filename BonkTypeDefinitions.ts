@@ -2,13 +2,13 @@
 * The different types of modes in bonk.io
 */
 export enum eMode {
-    Arrows = "ar",
-    ArrowsDeath = "ard",
-    Classic = "b", //Likely stands for "bonk" Also a """game engine"""
+    Arrows = "ar", //Likely stands for "arrows"
+    ArrowsDeath = "ard", //Likely stands for "arrows death"
+    Classic = "b", //Likely stands for "bonk"
     Simple = "bs", //Likely stands for "bonk simple"
-    Football = "f", //Also a """game engine"""
+    Football = "f", //Likely stands for "football"
     Grapple = "sp", //Probably stands for "swing proximity"
-    VTOL = "v",
+    VTOL = "v", //probably stands for "vtol"
 }
 
 /**
@@ -1500,8 +1500,8 @@ export interface gameSettings {
 export interface dataCustom {
     footballGamestate: footballGameState;
     bonkGamestate: bonkGamestate;
-    input: any;
-    draw: any;
+    input: frameInput;
+    draw: any; //"graphics"
     map: map;
     lobby: {
         room: roomInfo;
