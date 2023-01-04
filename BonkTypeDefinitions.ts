@@ -172,17 +172,6 @@ export enum eBodyType {
     dynamic = 'd',
 }
 
-/*
-todo: Incomplete
-add newEventListener interfaces and more event names
-*/
-export enum eEventNameRecv {
-    newPlayerJoined = 4 
-}
-
-export enum eEventNameOut {
-}
-
 /**
 * Contains info about the current roomInfo
 */
@@ -227,6 +216,7 @@ export interface playerInfo { //Likely real name is playerState
     */
     team: eTeam;
 }
+
 export interface lobbyPlayerInfo {
     /**
     * The Player ID of the player.
@@ -253,6 +243,40 @@ export interface lobbyPlayerInfo {
     userName: string;
 }
 
+export interface discDeath {
+    /**
+    * Likely stands for "frames"
+    * 
+    * Frames till the player death? 
+    */
+    f: number;
+    /**
+    * The id of the "disc" that died 
+    */
+    i: number;
+    /**
+    * Unknown what this does, ranges from 1 to 4?
+    * 
+    * Gets set to "diedThisStep" within the code
+    */
+    m: number;
+    /**
+    * Position x
+    */
+    x: number;
+    /**
+    * Position y
+    */
+    y: number;
+    /**
+    * Velocity X
+    */
+    xv: number;
+    /**
+    * Velocity Y
+    */
+    yv: number;
+}
 export interface disc {
     /**
     * Position x
@@ -377,7 +401,7 @@ export interface projectile {
     /**
     * Stands for "frames to end"
     * 
-    * in a projectiles case its probably the timer that indicates how long until the arrow disappears / ends?
+    * in a projectile's case its probably the timer that indicates how long until the arrow disappears / ends?
     */
     fte: number;
     /**
@@ -385,13 +409,11 @@ export interface projectile {
     * 
     * see eTeam enum for team ids
     */
-    team: eProjectileType;
+    team: eTeam;
     /**
     * The projectile type 
-    * 
-    * only one I know of is "arrow"
     */
-    type: string;
+    type: eProjectileType;
     /**
     * Position x
     */
@@ -414,6 +436,87 @@ export interface projectile {
     ni?: boolean;
 }
 
+export interface bonkGamestate {
+    capZones: captureZone[];
+    discDeaths: discDeath[];
+    discs: disc[];
+    /**
+    * Stands for "frames to end"
+    * 
+    * It's a timer number that indicates how many steps are left until the round ends and the world gets reset.
+    * 
+    * When fte is greater than -1, a win screen appears and it starts counting down until it reaches 0,
+    * and the round ends.
+    * 
+    * When fte equals -1, the timer is inactive: nothing happens.
+    */
+    fte: number;
+    /**
+    * stands for "frames to unfreeze".
+    * 
+    * It's a timer number that indicates how many steps are left until the world unfreezes and the players can start moving.
+    * 
+    * On the first round, the name and author of the map will appear in a splash screen during this period.
+    * 
+    * On every other round, a "Game starts in" countdown will appear, showing the amount of seconds left until the timer is over.
+    * 
+    * When the timer reaches -1, it stops and the world unfreezes.
+    */
+    ftu: number;
+    
+    /**
+    * Likely stands for "last scored current round".
+    * 
+    * - On a Free For All game, it contains the ID of the player who just won the round.
+    * - On a Teams game, it indicates the team that just won the round: 0 = red, 1 = blue, 2 = green, 3 = yellow.
+    * - When set to -1 (both in FFA and Teams), it indicates a draw.
+    */
+    lscr: number;
+    /**
+    * Likely stands for "map metadata" 
+    */
+    mm: mapMetadata;
+    /**
+    * Likely stands for "map settings" 
+    */
+    ms: mapSettings;
+    physics: physicsState;
+    /**
+    * Array containing info about players
+    */
+    players: (playerInfo|null)[];
+    /**
+    * Array that contains varied attributes for every projectile, such as their owner and position.
+    * 
+    * Ordered by projectile ID (projectile[0] is projectile with ID 0, projectile[2] is the projectile with ID 2, etc.)
+    */
+    projectiles: projectile[];
+    /**
+    * Likely stands for "round count". It indicates how many rounds have passed since the game started (when the host presses START).
+    */
+    rc: number;
+    /**
+    * Likely stands for "round length". It's the amount of steps that have happened since last round start.
+    */
+    rl: number;
+    /**
+    * Array containing the amount of wins for each player/team.
+    * 
+    * - On a Free For All game, these scores are ordered by player ID and each one of them corresponds
+    *  public  to a player. For example: scores[10] would be player ID 10's amount of wins.
+    * - On a Teams game, there are up to 4 items, each one corresponding to a specific team,
+    *  public  in the following order: 0 = red, 1 = blue, 2 = green, 3 = yellow.
+    *  public  For example: scores[2] would be Team Green's amount of wins.
+    */
+    scores: number[];
+    seed: number;
+    shk: dVector2;
+    /**
+    * Stands for "sounds this step"
+    */
+    sts: (soundsThisStep|number|undefined)[]|null;
+    dontInterpolate?: boolean;
+}
 export interface footballGameState {
     /**
     *  Array containing the amount of wins for each team.
@@ -452,7 +555,7 @@ export interface footballGameState {
     /**
     * Stands for "sounds this step"
     */
-    sts: ((null|soundsThisStep|number|undefined)[]|undefined);
+    sts: (soundsThisStep|number|undefined)[]|null;
     /**
     * Stands for "no interpolation"
     * Setting this value to true will make the game not interpolate the player's movement until the next step. Useful for teleporting players without visible middle frames.
@@ -515,12 +618,20 @@ export interface soundsThisStep {
 
 export interface map {
     /**
+    * Likely stands for "version" 
+    * 
     * Map version ex, flash or bonk2
     */
     v: number;
+    /**
+    * Likely stands for "settings" 
+    */
     s: mapSettings;
+    /**
+    * Likely stands for "metadata" 
+    */
     m: mapMetadata;
-    physics: physics;
+    physics: physicsState;
     spawns: spawn[];
     capZones: captureZone[];
 }
@@ -602,7 +713,12 @@ export interface mapMetadata { //most are rarely optional
      * In completely original maps, it gets set to 1. 
     */
     rxdb: number;
-    cr?: [];
+    /**
+    * Likely stands for "credits"
+    * 
+    * Contains usernames 
+    */
+    cr?: string[];
     /**
     * Likely stands for "published"
     * 
@@ -633,7 +749,7 @@ export interface avatar {
     * The different "layers" of shapes on the skin
     * For a skin to be usable this must not be over 15 layers
     */
-    layers: (avatarLayer|undefined)[]
+    layers: (avatarLayer|undefined)[];
     /**
     * Stands for "background colour"
     * 
@@ -680,10 +796,10 @@ export interface avatarLayer {
     * 
     * Value minimum is 0 and maximum 16777215 otherwise it will be reverted back to 0 
     */
-    color: number
+    color: number;
 }
 
-export type joint = baseJoint & (revoluteJoint | distanceJoint | legacyPathJoint | legacySpringyJoint | pathJoint | softRodJoint | gearJoint)
+export type joint = baseJoint & (revoluteJoint | distanceJoint | legacyPathJoint | legacySpringyJoint | pathJoint | softRodJoint | gearJoint);
 
 export interface baseJoint {
     /**
@@ -786,8 +902,14 @@ export interface distanceJoint {
     * contains extra info about the joint for drawing
     */
     d: {
-        fh: any;
-        dr: any;
+        /**
+        * Likely Stands for "damping ratio"
+        */
+        dr: number;
+        /**
+        * Likely Stands for "frequency hz" 
+        */
+        fh: number;
         /**
         * Stands for "collideConnected"
         * 
@@ -1023,7 +1145,6 @@ export interface gearJoint {
 
 export type shape = baseShape & (boxShape | circleShape | polyShape | chainShape);
 
-//todo add info for shapes
 export interface baseShape { 
     /**
     * The shape "type" 
@@ -1131,7 +1252,7 @@ export interface fixture {
     ng: boolean;
 }
 
-export interface physics {
+export interface physicsState {
     bodies: (body|undefined)[];
     bro: number[];
     fixtures: (fixture|undefined)[];
@@ -1378,7 +1499,8 @@ export interface gameSettings {
 */
 export interface dataCustom {
     footballGamestate: footballGameState;
-    bonkGamestate: any; //todo add info / add interface
+    bonkGamestate: bonkGamestate;
+    d: any;
     map: map;
     lobby: {
         room: roomInfo;
@@ -1387,7 +1509,7 @@ export interface dataCustom {
     screen: vector2;
 }
 
-declare type vector2 = [x:number, y:number];
-declare type vector3 = [x:number, y:number, z:number];
+declare type vector2 = [number, number]; //x,y, don't add x: or y: as TSNamedTupleMember isnt supported
+declare type vector3 = [number, number, number]; //x,y,z don't add x: or y: or z: as TSNamedTupleMember isnt supported
 declare type dVector2 = {x:number, y:number};
 declare type dVector3 = {x:number, y:number, z:number};
