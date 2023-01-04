@@ -600,7 +600,7 @@ export interface footballGameState {
 /**
 * Contains info about which keys are being pressed 
 */
-export interface input {
+export interface frameInput {
     action: boolean;
     action2: boolean;
     down: boolean;
@@ -1495,17 +1495,19 @@ export interface gameSettings {
 
 /**
 * not in real bonk from modded client 
-* also not to be confused with "data" object
+* also not to be confused with "data" object which does have some identical vars like "input" and "player" and "draw"
 */
 export interface dataCustom {
     footballGamestate: footballGameState;
     bonkGamestate: bonkGamestate;
-    d: any;
+    input: any;
+    draw: any;
     map: map;
     lobby: {
         room: roomInfo;
         playerArray: lobbyPlayerInfo;
     }
+    player: any;
     screen: vector2;
 }
 
